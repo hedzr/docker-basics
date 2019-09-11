@@ -21,6 +21,7 @@ action "Build" {
   uses = "actions/action-builder/docker@master"
   runs = "make"
   args = "build"
+  secrets = ["DOCKER_USERNAME", "DOCKER_PASSWORD"]
 }
 
 action "Publish Filter" {

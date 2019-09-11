@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+docker build -t redis:5.0.5-mod .
+docker build -t hedzr/redis:5.0.5-mod .
+docker build -t hedzr/redis .
+

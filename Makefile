@@ -4,7 +4,7 @@ all: build
 # all: alpine redis ubuntu
 
 
-build: alpine
+build: alpine ubuntu redis
 	# hold it
 	@echo "  > build for '$(DOCKER_USERNAME)'..."
 
@@ -16,6 +16,9 @@ test:
 
 publish:
 	@echo "  > publish ..."
+
+
+
 
 
 
@@ -33,6 +36,15 @@ alpine: | ./alpine-base/ ./alpine-base-net/
 
 
 
+ubuntu: | ./ubuntu-mod/
+	@echo done
+
+.PHONY: ./ubuntu-mod/
+./ubuntu-mod/:
+	$(MAKE) -C $@
+
+
+
 redis: | ./redis-mod/
 	@echo done
 
@@ -40,14 +52,6 @@ redis: | ./redis-mod/
 ./redis-mod/:
 	$(MAKE) -C $@
 
-
-
-ubuntu: | ./ubuntu-mod/
-	@echo done
-
-.PHONY: ./ubuntu-mod/
-./ubuntu-mod/:
-	$(MAKE) -C $@
 
 
 

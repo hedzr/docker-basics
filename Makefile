@@ -24,6 +24,7 @@ alpine: | ./alpine-base/ ./alpine-base-net/
 
 .PHONY: ./alpine-base/
 ./alpine-base/:
+	@echo "  > build alpine for '$(DOCKER_USERNAME)'..."
 	$(MAKE) -C $@ # $(MAKECMDGOALS)
 
 .PHONY: ./alpine-base-net/

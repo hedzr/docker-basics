@@ -1,0 +1,111 @@
+version: '3.3'
+services:
+  ui:
+    image: apache/skywalking-ui:6.2.0
+    container_name: skywalking-ui
+    depends_on:
+      - oap
+    links:
+      - oap
+    restart: always
+    ports:
+      - 18080:8080
+    environment:
+      collector.ribbon.listOfServers: oap:12800
+    networks:
+      - default
+      - voxr_app_net
+
+  oap:
+    image: apache/skywalking-oap-server:6.2.0
+    container_name: skywalking-oap
+    restart: always
+    ports:
+      - 1234:1234
+      - 11800:11800
+      - 12800:12800
+    environment:
+      - SW_STORAGE=elasticsearch
+      #- SW_STORAGE_ES_CLUSTER_NODES=${ES_NODE}     # Es addr, retrieved from .env
+      #- SW_STORAGE_ES_CLUSTER_NODES=192.168.0.13:9200
+      - SW_STORAGE_ES_CLUSTER_NODES=elasticsearch:9200
+      - TZ=Asia/Shanghai
+    #links:
+    #  - elasticsearch:elasticsearch
+    #depends_on:
+    #  - elasticsearch
+    networks:
+      - default
+      - voxr_app_net
+
+
+
+networks:
+  voxr_app_net:
+    external: true
+
+#  ui:
+#    image: apache/skywalking-ui:6.2.0
+#    container_name: skywalking-ui
+#    depends_on:
+#      - oap
+#    links:
+#      - oap
+#    restart: always
+#    ports:
+#      - 18080:8080
+#    environment:
+#      collector.ribbon.listOfServers: oap:12800
+#
+#  oap:
+#    image: apache/skywalking-oap-server:6.2.0
+#    container_name: skywalking-oap
+#    restart: always
+#    ports:
+#      - 10800:10800
+#      - 11800:11800
+#      - 12800:12800
+#    environment:
+#      - SW_STORAGE=elasticsearch
+#      #- SW_STORAGE_ES_CLUSTER_NODES=${ES_NODE}     # Es addr, retrieved from .env
+#      - SW_STORAGE_ES_CLUSTER_NODES=elasticsearch:9200
+#      - TZ=Asia/Shanghai
+#    links:
+#      - elasticsearch:elasticsearch
+#    depends_on:
+#      - elasticsearch
+#
+#  elasticsearch:
+#    image: elasticsearch:6.8.1
+#    container_name: elasticsearch
+#    ports:
+#      - 9200:9200
+#      - 9300:9300
+#    #environment: []
+#    #  #- discovery.type=single-node
+#    #volumes:
+#    #  - ./es/data:/usr/share/elasticsearch/data
+#    #  #- ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+#
+#    environment:
+#      - cluster.name=docker-cluster
+#      - bootstrap.memory_lock=true
+#      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+#    ulimits:
+#      memlock:
+#        soft: -1
+#        hard: -1
+#    volumes:
+#      #- esdata1:/usr/share/elasticsearch/data
+#      - ./es-data:/usr/share/elasticsearch/data
+#
+##volumes:
+##  esdata1:
+##    driver: local
+
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+version: '3.5'
+
+services:
+
+  registrar:
+    image: "quay.io/coreos/etcd:v3.3"
+    container_name: "etcd-registrar"
+    restart: always
+    environment:
+      ETCD_ADVERTISE_CLIENT_URLS: "http://0.0.0.0:2379"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:2379"
+      ETCDCTL_API: "3"
+      CLIENT_ADDR: "etcd-registrar"
+    volumes:
+      - "${DOCKER_DATA:-/data/voxr-data}/etcd-keeper-etcd-data:/etcd-data"
+    ports:
+      - 32379:2379
+      - 32380:2380
+      - 34001:4001
+    networks:
+      - default
+      - voxr_app_net
+
+  etcdkeeper:
+    # build: .
+    image: hedzr/etcdkeeper
+    # image: etcdkeeper
+    container_name: "etcdkeeper-web-ui"
+    restart: always
+    environment:
+      HOST: "0.0.0.0"
+    ports:
+      - 32000:8080
+    depends_on:
+      - registrar
+    networks:
+      - default
+      - voxr_app_net
+
+networks:
+  voxr_app_net:
+    external: true
+
+

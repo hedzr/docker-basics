@@ -1,0 +1,109 @@
+version: '3.3'
+services:
+
+  #
+  # First to create data cache directory and grant it before docker-compose up��
+  #
+  # mkdir es-data; chmod 0777 es-data
+  #
+  # Second to create docker network adapter��
+  #
+  # docker network create skyw_app_net
+  #
+
+  elasticsearch:
+    image: elasticsearch:6.8.1
+    container_name: elasticsearch
+    ports:
+      - 9200:9200
+      - 9300:9300
+    #environment: []
+    #  #- discovery.type=single-node
+    #volumes:
+    #  - ./es/data:/usr/share/elasticsearch/data
+    #  #- ./es/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      #- index.refresh_interval=300s
+      #- index.number_of_replicas=0
+      #- index.merge.scheduler.max_thread_count=1 #
+      #- indices.memory.index_buffer_size=30%     #
+      #- index.translog.durability=async          # improve write HDD performance
+      #- index.translog.sync_interval=120s        #
+      - discovery.zen.ping_timeout=120s           # heartbeat timeout
+      - discovery.zen.fd.ping_interval=120s       # node detecting interval
+      - discovery.zen.fd.ping_timeout=120s        #
+      - discovery.zen.fd.ping_retries=6           # heartbeat retry times
+      - thread_pool.bulk.size=9                   # count of write threads
+      - thread_pool.bulk.queue_size=1000          # write thread queue size
+      - thread_pool.write.size=9
+      #- "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms3g -Xmx3g"
+    #ulimits:
+    #  memlock:
+    #    soft: -1
+    #    hard: -1
+    volumes:
+      #- esdata1:/usr/share/elasticsearch/data
+      - "${DOCKER_DATA:-/data/voxr-data}/es-data:/usr/share/elasticsearch/data"
+    networks:
+      - default
+      - voxr_app_net
+
+  #volumes:
+  #  esdata1:
+  #    driver: local
+
+
+  #  admin:
+  #    image: mobz/elasticsearch-head:5
+  #    ports:
+  #      - 9100:9100
+  #  NOTE: es 6 can't work
+
+  # cerebro:
+  #   https://github.com/lmenezes/cerebro/releases
+  #   https://github.com/lmenezes/cerebro-docker
+
+  admin:
+    image: lmenezes/cerebro
+    container_name: admin
+    ports:
+      - 9000:9000
+    networks:
+      - default
+      - voxr_app_net
+
+
+
+
+networks:
+  voxr_app_net:
+    external: true
+
+#
+# - https://www.itfanr.cc/2017/03/22/elasticsearch-container-in-alpine/
+# - https://github.com/mobz/elasticsearch-head
+# - https://www.cnblogs.com/jianxuanbing/p/9410800.html
+# - https://juejin.im/post/5b799bff51882542dd224943 ElasticSearch 6.x first impression
+#
+# - https://juejin.im/post/5ca0d12c518825550b35be6d
+#   vim /etc/sysctl.conf
+#     ## append this
+#     #vm.max_map_count=262144
+#     ## and run the following command after sysctl.conf saved
+#     #sysctl -p
+#
+#
+
+#  curl -H "Accept: application/json" -H "Content-Type: application/json" -XPUT localhost:9200/_cluster/settings -d '{
+# "transient" : {
+#  "cluster.routing.allocation.disk.threshold_enabled" : false
+# }
+# }'
+
+
+

@@ -19,6 +19,12 @@
    - [lite-etcd-std](etcd-std/lite-etcd-std)
      etcd, *+etcdkeeper, ...*
 
+1. [nacos-std](nacos-std)
+   nacos, *+mysql(master+salve), +grafana, +prometheus, ...*
+   
+   - [nacos-local](nacos-local)
+     nacos, *+mysql(master+salve), +grafana, +prometheus, ...*
+
 
 ## Link to
 

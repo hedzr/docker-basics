@@ -25,6 +25,12 @@
    - [nacos-local](nacos-local)
      nacos, *+mysql(master+salve), +grafana, +prometheus, ...*
 
+1. [elasticsearch-std](elasticsearch-std)
+   elasticsearch, *+cerebro, ...*
+
+1. [skywalking-std](skywalking-std)
+   skywalking
+
 
 ## Link to
 

@@ -1,0 +1,84 @@
+version: '3'
+
+services:
+  zookeeper:
+    # https://github.com/wurstmeister/zookeeper-docker
+    image: wurstmeister/zookeeper
+    volumes:
+      # - ./zk.conf:/opt/zookeeper-3.4.13/conf
+      - "${DOCKER_DATA:-/data/voxr-data}/zk.data:/opt/zookeeper-3.4.13/data}
+    ports:
+      - "2181:2181"
+    networks:
+      - default
+      - voxr_app_net
+
+  # docker rm -f zk-web
+  # docker run -d -p 2180:8080 -e ZK_DEFAULT_NODE=192.168.0.72:2181 -e USER=admin -e PASSWORD=admin --name zk-web -t tobilg/zookeeper-webui
+  zk-web:
+    image: tobilg/zookeeper-webui
+    ports:
+      - "2180:2181"
+    environment:
+      ZK_DEFAULT_NODE: "zookeeper:2181"
+      USER: admin
+      PASSWORD: admin
+    depends_on:
+      - zookeeper
+    networks:
+      - default
+      - voxr_app_net
+
+
+  #  kafka:
+  #    image: wurstmeister/kafka
+  #    # build: .
+  #    depends_on: [ zookeeper ]
+  #    ports:
+  #      - "9092:9092"
+  #    environment:
+  #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:9092
+  #      KAFKA_LISTENERS: PLAINTEXT://:9092
+  #      # KAFKA_ADVERTISED_HOST_NAME: 192.168.0.13
+  #      KAFKA_CREATE_TOPICS: "test:1:1"
+  #      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #    volumes:
+  #      - /var/run/docker.sock:/var/run/docker.sock
+
+  kafka:
+    # https://github.com/wurstmeister/kafka-docker
+    image: wurstmeister/kafka
+    # build: .
+    depends_on: [ zookeeper ]
+    ports:
+      - "9092:9092"
+    environment:
+      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://:9092
+      # KAFKA_LISTENERS: PLAINTEXT://:9092
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_CREATE_TOPICS: "test:1:1"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+      - voxr_app_net
+
+
+
+networks:
+  voxr_app_net:
+    external: true
+
+#
+# https://hub.docker.com/r/wurstmeister/kafka
+# docker-compose exec kafka bash
+# > export ZK=zookeeper:2181
+# > $KAFKA_HOME/bin/kafka-topics.sh --create --topic topic --partitions 4 --zookeeper $ZK --replication-factor 1
+#
+#
+# docker-compose exec kafka kafka-topics.sh --create --topic topic --partitions 4 --zookeeper zookeeper:2181 --replication-factor 1
+# docker-compose exec kafka kafka-topics.sh --create --topic triot-topic --partitions 4 --zookeeper zookeeper:2181 --replication-factor 1
+#
+#
+#

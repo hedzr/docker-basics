@@ -64,23 +64,23 @@ redis: | ./redis-mod/
 ## run-monitor: run 'monitor' containers
 run-monitor:
 	(cd ./monitor; $(MAKE) $(or $(cmd),start))
-	# cmd=$(cmd:-start)
-	@echo
+	# cmd=$(or $(cmd),start))
+	@echo open grafana at: http://localhost:13000
 
-.PHONY: ./monitor/
+.PHONY: ./monitor/ run-monitor
 ./monitor/:
 	@echo '    @: $@'
-	@echo '  cmd: $(cmd-start)'
-	$(MAKE) -C $@ $(cmd:-start)
+	@echo '  cmd: $(or $(cmd),start)'
+	$(MAKE) -C $@ $(or $(cmd),start)
 
 
-## run-nacos: run 'nacos' containers
+## run-nacos: run 'nacos' containers. (could be: make run-nacos cmd=start,stop,logs,run,clear)
 run-nacos: | ./nacos-std/
-	@echo
+	@echo open nacos web ui at: http://localhost:8848/nacos
 
-.PHONY: ./nacos-std/
+.PHONY: ./nacos-std/ run-nacos
 ./nacos-std/:
-	$(MAKE) -C $@ start
+	$(MAKE) -C $@ $(or $(cmd),start)
 
 
 

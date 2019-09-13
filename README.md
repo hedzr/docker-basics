@@ -19,8 +19,11 @@
    - [lite-etcd-std](etcd-std/lite-etcd-std)
      etcd, *+etcdkeeper, ...*
 
+1. [monitor](monitor)
+   *+grafana, +prometheus, ...*
+
 1. [nacos-std](nacos-std)
-   nacos, *+mysql(master+salve), +grafana, +prometheus, ...*
+   nacos, *+mysql(master+salve), ~~+grafana, +prometheus~~, ...*
    
    - [nacos-local](nacos-local)
      nacos, *+mysql(master+salve), +grafana, +prometheus, ...*
@@ -39,6 +42,33 @@
 
 1. [mysql-master-slave](mysql-master-slave)
    mysql: master + slave
+
+
+### run
+
+```bash
+make run-monitor
+make run-nacos
+# ...
+```
+
+### nacos guide
+
+1. starting them
+
+   ```bash
+   make run-monitor
+   make run-nacos
+   # ...
+   ```
+
+2. initialize nacos monitor data
+
+   following this guide: 
+   - <https://nacos.io/zh-cn/docs/monitor-guide.html>
+   - <https://nacos.io/en/docs/monitor-guide.html>
+
+
 
 
 

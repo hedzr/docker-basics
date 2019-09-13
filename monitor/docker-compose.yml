@@ -8,8 +8,8 @@ services:
       - ./prometheus.conf.d/prometheus-dbl.yaml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
-    depends_on:
-      - nacos
+    #depends_on:
+    #  - nacos
     restart: on-failure
     networks:
       - default

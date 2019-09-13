@@ -31,6 +31,16 @@
 1. [skywalking-std](skywalking-std)
    skywalking
 
+1. [zipkin-std](zipkin-std)
+   zipkin, *+zipkin-mysql, +grafana, +prometheus, ...*
+
+1. [kafka-std](kafka-std)
+   kafka, *+zookeeper, +zk-web ...*
+
+1. [mysql-master-slave](mysql-master-slave)
+   mysql: master + slave
+
+
 
 ## Link to
 

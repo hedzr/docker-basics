@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.conf.d/prometheus-dbl.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - nacos
+    restart: on-failure
+    networks:
+      - default
+      - voxr_app_net
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - 13000:3000
+    restart: on-failure
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    networks:
+      - default
+      - voxr_app_net
+
+networks:
+  voxr_app_net:
+    external: true

@@ -1,5 +1,6 @@
 version: "2"
 services:
+
   nacos:
     image: nacos/nacos-server:latest
     container_name: nacos-standalone-mysql
@@ -22,6 +23,9 @@ services:
       - "9555:9555"
     depends_on:
       - mysql-slave
+    #external_links:
+    #  - prometheus
+    #  - grafana
     restart: on-failure
     networks:
       - default
@@ -57,32 +61,33 @@ services:
       - default
       - voxr_app_net
 
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    volumes:
-      - ./prometheus-dbl.yaml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    depends_on:
-      - nacos
-    restart: on-failure
-    networks:
-      - default
-      - voxr_app_net
 
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:latest
-    ports:
-      - 13000:3000
-    restart: on-failure
-    environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-    networks:
-      - default
-      - voxr_app_net
+#  prometheus:
+#    container_name: prometheus
+#    image: prom/prometheus:latest
+#    volumes:
+#      - ./prometheus-dbl.yaml:/etc/prometheus/prometheus.yml
+#    ports:
+#      - "9090:9090"
+#    depends_on:
+#      - nacos
+#    restart: on-failure
+#    networks:
+#      - default
+#      - voxr_app_net
+#
+#  grafana:
+#    container_name: grafana
+#    image: grafana/grafana:latest
+#    ports:
+#      - 13000:3000
+#    restart: on-failure
+#    environment:
+#      - GF_AUTH_ANONYMOUS_ENABLED=true
+#      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+#    networks:
+#      - default
+#      - voxr_app_net
 
 networks:
   voxr_app_net:

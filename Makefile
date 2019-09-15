@@ -61,7 +61,7 @@ redis: | ./redis-mod/
 
 
 
-## run-monitor: run 'monitor' containers
+## run-monitor: run 'monitor' containers. (could be: make run-monitor cmd=start,stop,logs,run,clear)
 run-monitor:
 	(cd ./monitor; $(MAKE) $(or $(cmd),start))
 	# cmd=$(or $(cmd),start))
@@ -94,7 +94,7 @@ run-zipkin: | ./zipkin-std/
 
 
 
-## run-zipkin: run 'zipkin' containers. (could be: make run-zipkin cmd=start,stop,logs,run,clear)
+## run-zipkin: run 'etcd'+'db'+'cache' containers. (could be: make run-etcd cmd=start,stop,logs,run,clear)
 run-etcd: | ./etcd-std/
 	@echo open etcd web ui at: http://localhost:32000/
 	@echo connect with etcd 3:  localhost:32379
@@ -107,13 +107,22 @@ run-etcd: | ./etcd-std/
 
 
 
-## run-zipkin: run 'zipkin' containers. (could be: make run-zipkin cmd=start,stop,logs,run,clear)
+## run-es: run 'elasticsearch' containers. (could be: make run-es cmd=start,stop,logs,run,clear)
 run-es: | ./elasticsearch-std/
 	@echo connect elasticsearch:  localhost:9200
 	@echo connect elasticsearch web ui (cerebro): localhost:9000
 
 .PHONY: ./elasticsearch-std/ run-elasticsearch
 ./elasticsearchin-std/:
+	$(MAKE) -C $@ $(or $(cmd),start)
+
+
+## run-skyw: run 'skywalking' containers. (could be: make run-skyw cmd=start,stop,logs,run,clear)
+run-skyw: | ./skywalking-std/
+	@echo open zipkin web ui at: http://localhost:9411/
+
+.PHONY: ./skywalking-std/ run-skywalking
+./skywalking-std/:
 	$(MAKE) -C $@ $(or $(cmd),start)
 
 

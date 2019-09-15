@@ -62,6 +62,8 @@ make run-etcd
 # start elasticsearch
 make run-es
 
+# start skywalking (after `make run-es`)
+make run-skyw
 
 # ...
 ```
@@ -87,6 +89,21 @@ make run-es
    following this guide: 
    - <https://nacos.io/zh-cn/docs/monitor-guide.html>
    - <https://nacos.io/en/docs/monitor-guide.html>
+
+
+
+### skywalking guide
+
+1. starting them
+
+   ```bash
+   make run-es
+   make run-skyw
+   # ...
+   ```
+   
+   open <http://localhost:18080/>.
+   
 
 
 ### zipkin guide

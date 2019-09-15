@@ -59,6 +59,10 @@ make run-zipkin
 # start etcd, mysql 8 (for biz-logic), and redis 5
 make run-etcd
 
+# start elasticsearch
+make run-es
+
+
 # ...
 ```
 

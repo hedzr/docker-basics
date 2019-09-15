@@ -83,6 +83,14 @@ run-nacos: | ./nacos-std/
 	$(MAKE) -C $@ $(or $(cmd),start)
 
 
+## run-zipkin: run 'zipkin' containers. (could be: make run-zipkin cmd=start,stop,logs,run,clear)
+run-zipkin: | ./zipkin-std/
+	@echo open zipkin web ui at: http://localhost:9411/
+
+.PHONY: ./zipkin-std/ run-zipkin
+./zipkin-std/:
+	$(MAKE) -C $@ $(or $(cmd),start)
+
 
 
 

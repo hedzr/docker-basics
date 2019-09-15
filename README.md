@@ -14,7 +14,7 @@
 ## Composes
 
 1. [etcd-std](etcd-std)
-   etcd, *+etcdkeeper(-mod), +db, +cache, ...*
+   etcd, *+etcdkeeper(-mod), +db (**mysql:8**), +cache (**redis 5**), ...*
    
    - [lite-etcd-std](etcd-std/lite-etcd-std)
      etcd, *+etcdkeeper, ...*
@@ -61,6 +61,12 @@ make run-nacos
    make run-nacos
    # ...
    ```
+   
+   open <http://localhost:8848/nacos> and login with `nacos/nacos`.
+   
+   monitor:
+   - open grafana at http://localhost:13000/
+   - open prometheus at http://localhost:9090/, *and search `nacos-monitor` to lookup nacos data*. 
 
 2. initialize nacos monitor data
 
@@ -68,6 +74,22 @@ make run-nacos
    - <https://nacos.io/zh-cn/docs/monitor-guide.html>
    - <https://nacos.io/en/docs/monitor-guide.html>
 
+
+### zipkin guide
+
+1. starting them
+
+   ```bash
+   make run-monitor
+   make run-zipkin
+   # ...
+   ```
+   
+   open <http://localhost:9411/>.
+   
+   monitor:
+   - open grafana at http://localhost:13000/
+   - open prometheus at http://localhost:9090/ 
 
 
 

@@ -84,38 +84,38 @@ services:
       - zipkin_net
       - voxr_app_net
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus-zipkin
-    ports:
-      - 19090:9090
-    depends_on:
-      - storage
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - zipkin_net
-      - voxr_app_net
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana-zipkin
-    ports:
-      - 13000:3000
-    depends_on:
-      - prometheus
-    environment:
-      - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-    networks:
-      - zipkin_net
-      - voxr_app_net
+  #  prometheus:
+  #    image: prom/prometheus
+  #    container_name: prometheus-zipkin
+  #    ports:
+  #      - 19090:9090
+  #    depends_on:
+  #      - storage
+  #    volumes:
+  #      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #    networks:
+  #      - zipkin_net
+  #      - voxr_app_net
+  #
+  #  grafana:
+  #    image: grafana/grafana
+  #    container_name: grafana-zipkin
+  #    ports:
+  #      - 13000:3000
+  #    depends_on:
+  #      - prometheus
+  #    environment:
+  #      - GF_AUTH_ANONYMOUS_ENABLED=true
+  #      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+  #    networks:
+  #      - zipkin_net
+  #      - voxr_app_net
 
   setup_grafana_datasource:
     image: appropriate/curl
     container_name: setup_grafana_datasource
-    depends_on:
-      - grafana
+    #depends_on:
+    #  - grafana
     volumes:
       - ./prometheus/create-datasource-and-dashboard.sh:/create.sh:ro
     command: /create.sh

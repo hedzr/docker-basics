@@ -107,6 +107,16 @@ run-etcd: | ./etcd-std/
 
 
 
+## run-zipkin: run 'zipkin' containers. (could be: make run-zipkin cmd=start,stop,logs,run,clear)
+run-es: | ./elasticsearch-std/
+	@echo connect elasticsearch:  localhost:9200
+	@echo connect elasticsearch web ui (cerebro): localhost:9000
+
+.PHONY: ./elasticsearch-std/ run-elasticsearch
+./elasticsearchin-std/:
+	$(MAKE) -C $@ $(or $(cmd),start)
+
+
 
 
 

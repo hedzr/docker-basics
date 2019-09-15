@@ -47,8 +47,18 @@
 ### run
 
 ```bash
+# start premetreus and grafana
 make run-monitor
+
+# start nacos (and an embedded mysql master+slave)
 make run-nacos
+
+# start zipkin (and an embedded mysql)
+make run-zipkin
+
+# start etcd, mysql 8 (for biz-logic), and redis 5
+make run-etcd
+
 # ...
 ```
 

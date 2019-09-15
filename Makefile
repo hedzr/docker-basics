@@ -92,6 +92,8 @@ run-zipkin: | ./zipkin-std/
 	$(MAKE) -C $@ $(or $(cmd),start)
 
 
+
+
 ## run-zipkin: run 'zipkin' containers. (could be: make run-zipkin cmd=start,stop,logs,run,clear)
 run-etcd: | ./etcd-std/
 	@echo open etcd web ui at: http://localhost:32000/
@@ -99,8 +101,8 @@ run-etcd: | ./etcd-std/
 	@echo connect with mysql 8: localhost:33306
 	@echo connect with redis 5: localhost:36379
 
-.PHONY: ./zipkin-std/ run-zipkin
-./zipkin-std/:
+.PHONY: ./etcd-std/ run-etcd
+./etcd-std/:
 	$(MAKE) -C $@ $(or $(cmd),start)
 
 

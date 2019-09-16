@@ -3,8 +3,10 @@ V=bionic-mod
 VER=18-mod
 VERSION=18.04-mod
 TAG=hedzr/ubuntu
+DOCKER_USERNAME?=$(USER)
 
-build:
+.PHONY: build
+build: ./Dockerfile
 	docker build -t $(TAG):$(V) -t $(TAG):$(VER) -t $(TAG):$(VERSION) -t $(TAG):latest  .
 	docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
 	docker push $(TAG):$(V)

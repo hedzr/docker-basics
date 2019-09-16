@@ -30,12 +30,11 @@ publish:
 alpine: | ./alpine-base/ ./alpine-base-net/
 	@echo done
 
-.PHONY: ./alpine-base/
+.PHONY: ./alpine-base/ ./alpine-base-net/ alpine
 ./alpine-base/:
 	@echo "  > build alpine for '$(DOCKER_USERNAME)'..."
 	$(MAKE) -C $@ # $(MAKECMDGOALS)
 
-.PHONY: ./alpine-base-net/
 ./alpine-base-net/:
 	$(MAKE) -C $@ # $(MAKECMDGOALS)
 
@@ -44,8 +43,8 @@ alpine: | ./alpine-base/ ./alpine-base-net/
 ubuntu: | ./ubuntu-mod/
 	@echo done
 
-.PHONY: ./ubuntu-mod/
-./ubuntu-mod/:
+.PHONY: ./ubuntu-mod/ ubuntu
+./ubuntu-mod/: | ./ubuntu-mod/*
 	$(MAKE) -C $@
 
 
@@ -53,15 +52,15 @@ ubuntu: | ./ubuntu-mod/
 redis: | ./redis-mod/
 	@echo done
 
-.PHONY: ./redis-mod/
-./redis-mod/:
+.PHONY: ./redis-mod/ redis
+./redis-mod/: | ./redis-mod/*
 	$(MAKE) -C $@
 
 
 
 
 
-## run-monitor: run 'monitor' containers. (could be: make run-monitor cmd=start,stop,logs,run,clear)
+## run-monitor: run 'monitor' containers. :(could be: make run-monitor cmd=start,stop,logs,run,clear)
 run-monitor:
 	(cd ./monitor; $(MAKE) $(or $(cmd),start))
 	# cmd=$(or $(cmd),start))
@@ -74,7 +73,7 @@ run-monitor:
 	$(MAKE) -C $@ $(or $(cmd),start)
 
 
-## run-nacos: run 'nacos' containers. (could be: make run-nacos cmd=start,stop,logs,run,clear)
+## run-nacos: run 'nacos' containers. :(could be: make run-nacos cmd=start,stop,logs,run,clear)
 run-nacos: | ./nacos-std/
 	@echo open nacos web ui at: http://localhost:8848/nacos
 
@@ -83,7 +82,7 @@ run-nacos: | ./nacos-std/
 	$(MAKE) -C $@ $(or $(cmd),start)
 
 
-## run-zipkin: run 'zipkin' containers. (could be: make run-zipkin cmd=start,stop,logs,run,clear)
+## run-zipkin: run 'zipkin' containers. :(could be: make run-zipkin cmd=start,stop,logs,run,clear)
 run-zipkin: | ./zipkin-std/
 	@echo open zipkin web ui at: http://localhost:9411/
 
@@ -94,7 +93,7 @@ run-zipkin: | ./zipkin-std/
 
 
 
-## run-zipkin: run 'etcd'+'db'+'cache' containers. (could be: make run-etcd cmd=start,stop,logs,run,clear)
+## run-zipkin: run 'etcd'+'db'+'cache' containers. :(could be: make run-etcd cmd=start,stop,logs,run,clear)
 run-etcd: | ./etcd-std/
 	@echo open etcd web ui at: http://localhost:32000/
 	@echo connect with etcd 3:  localhost:32379
@@ -107,7 +106,7 @@ run-etcd: | ./etcd-std/
 
 
 
-## run-es: run 'elasticsearch' containers. (could be: make run-es cmd=start,stop,logs,run,clear)
+## run-es: run 'elasticsearch' containers. :(could be: make run-es cmd=start,stop,logs,run,clear)
 run-es: | ./elasticsearch-std/
 	@echo connect elasticsearch:  localhost:9200
 	@echo connect elasticsearch web ui (cerebro): localhost:9000
@@ -117,7 +116,7 @@ run-es: | ./elasticsearch-std/
 	$(MAKE) -C $@ $(or $(cmd),start)
 
 
-## run-skyw: run 'skywalking' containers. (could be: make run-skyw cmd=start,stop,logs,run,clear)
+## run-skyw: run 'skywalking' containers. :(could be: make run-skyw cmd=start,stop,logs,run,clear)
 run-skyw: | ./skywalking-std/
 	@echo open zipkin web ui at: http://localhost:9411/
 

@@ -2,6 +2,8 @@
 
 ## Images
 
+For better **debugging**, these images were expanded with ping,telnet,dig,nano,wget, ....
+
 1. [alpine-base](alpine-base) 
    alpine, *+bash, ping, telnet, dig, ...*
 

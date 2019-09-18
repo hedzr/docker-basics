@@ -20,7 +20,8 @@ LABEL maintainer Hedzr Yeh <hedzrz@gmail.com>
 RUN fetchDeps=" \
     		ca-certificates \
     		bash less nano iputils bind-tools busybox-extras \
-    		wget curl lsof byobu jq htop \
+    		wget lsof unzip \
+    		vim curl byobu jq htop \
     	"; \
     apk update \
     && apk --update add ${fetchDeps} \

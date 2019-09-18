@@ -20,7 +20,7 @@ LABEL maintainer Hedzr Yeh <hedzrz@gmail.com>
 RUN fetchDeps=" \
     		ca-certificates \
     		bash less nano iputils bind-tools busybox-extras \
-    		wget lsof vim.tiny unzip \
+    		wget lsof unzip \
     	"; \
     apk update \
     && apk --update add ${fetchDeps} \

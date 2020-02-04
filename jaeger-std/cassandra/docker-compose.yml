@@ -1,0 +1,75 @@
+version: '2'
+
+# https://luncher.github.io/2017/09/10/jaeger/
+
+services:
+  cassandra:
+    image: cassandra:3.11
+    container_name: cassandra
+    environment:
+      - CASSANDRA_DC=dc1
+      - MAX_HEAP_SIZE=512M
+      - HEAP_NEWSIZE=100M
+    ports:
+      - 9042:9042
+    restart: on-failure
+    volumes:
+      - /Users/ytx/cassandra/logs:/var/log/cassandra
+      - /Users/ytx/cassandra/data:/var/lib/cassandra
+
+  jaeger-cassandra-schema:
+    image: jaegertracing/jaeger-cassandra-schema:0.9
+    container_name: cassandra-schema
+    links:
+      - cassandra
+    environment:
+      - MODE=test
+      - DATACENTER=dc1
+
+  jaeger-collector:
+    image: jaegertracing/jaeger-collector:0.9
+    container_name: jaeger-collector
+    restart: on-failure
+    links:
+      - cassandra
+    environment:
+      - CASSANDRA_SERVERS=cassandra
+      - CASSANDRA_KEYSPACE=jaeger_v1_dc1
+      - CASSANDRA_PORT=9042
+    ports:
+      - 14267:14267/tcp
+      - 14268:14268/tcp
+      - 9411:9411/tcp
+
+  jaeger-agent:
+    image: jaegertracing/jaeger-agent:0.9
+    container_name: jaeger-agent
+    restart: on-failure
+    links:
+      - jaeger-collector
+    environment:
+      - COLLECTOR_HOST_PORT=jaeger-collector:14267
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778/tcp
+
+  jaeger-query:
+    image: jaegertracing/jaeger-query:0.9
+    container_name: jaeger-query
+    restart: on-failure
+    links:
+      - cassandra
+    environment:
+      - CASSANDRA_KEYSPACE=jaeger_v1_dc1
+      - CASSANDRA_SERVERS=cassandra
+    ports:
+      - 8003:16686/tcp
+
+networks:
+  default:
+    driver: bridge
+
+
+

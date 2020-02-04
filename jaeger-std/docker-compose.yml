@@ -1,0 +1,110 @@
+version: '3'
+
+# https://jeremyxu2010.github.io/2018/07/%E7%A0%94%E7%A9%B6%E8%B0%83%E7%94%A8%E9%93%BE%E8%B7%9F%E8%B8%AA%E6%8A%80%E6%9C%AF%E4%B9%8Bjaeger/
+
+#       ES_SERVER_URLS: http://${MY_HOST_IP:-127.0.0.1}:9200
+
+
+services:
+
+  jaeger-collector:
+    image: jaegertracing/jaeger-collector
+    restart: always
+    environment:
+      SPAN_STORAGE_TYPE: elasticsearch
+      ES_SERVER_URLS: http://elasticsearch:9200
+    ports:
+      - "14267:14267"
+      - "14268:14268"
+      - "9411:9411"
+    depends_on:
+      - elasticsearch
+    networks:
+      - default
+      - voxr_app_net
+
+  jaeger-query:
+    image: jaegertracing/jaeger-query
+    restart: always
+    environment:
+      SPAN_STORAGE_TYPE: elasticsearch
+      ES_SERVER_URLS: http://elasticsearch:9200
+    ports:
+      - "16686:16686"
+    depends_on:
+      - elasticsearch
+    networks:
+      - default
+      - voxr_app_net
+
+  jaeger-agent:
+    image: jaegertracing/jaeger-agent
+    restart: always
+    command: --collector.host-port=jaeger-collector:14267
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778/tcp"
+    depends_on:
+      - jaeger-collector
+    networks:
+      - default
+      - voxr_app_net
+
+
+
+  elasticsearch:
+    image: elasticsearch
+    command: -Enode.name=jaegerESNode
+    restart: always
+    volumes:
+      - "esdata:/usr/share/elasticsearch/data"
+    ports:
+      - "9200:9200"
+    networks:
+      - default
+      - voxr_app_net
+
+  jaeger-spark-dependencies:
+    image: jaegertracing/spark-dependencies
+    restart: always
+    environment:
+      STORAGE: elasticsearch
+      ES_NODES: http://elasticsearch:9200
+      ES_NODES_WAN_ONLY: 'true'
+      JAVA_OPTS: -Dspark.testing.memory=481859200
+    depends_on:
+      - elasticsearch
+    networks:
+      - default
+      - voxr_app_net
+
+  example-hotrod:
+    image: jaegertracing/example-hotrod
+    restart: always
+    # restart: on-failure
+    ### command: all --jaeger-agent.host-port=jaeger-agent:6831
+    environment:
+      JAEGER_AGENT_HOST: jaeger-agent
+      JAEGER_AGENT_PORT: '6831'
+    ports:
+      - "8080-8083:8080-8083"
+    depends_on:
+      - jaeger-agent
+    networks:
+      - default
+      - voxr_app_net
+
+
+volumes:
+  esdata:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: "${DOCKER_DATA:-/data/voxr-data}/jaeger/esdata"
+
+networks:
+  voxr_app_net:
+    external: true

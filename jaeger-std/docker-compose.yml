@@ -4,6 +4,40 @@ version: '3'
 
 #       ES_SERVER_URLS: http://${MY_HOST_IP:-127.0.0.1}:9200
 
+# Guide:
+#
+#  1. mkdir -p $HOME/data/voxr-data/jaeger/esdata
+#  2. docker network create voxr_app_net
+#  3. docker-compose up -d
+#  4. open http://localhost:9420 for example-hotrod, click something
+#     to test the Jaeger is ready for collecting anything.
+#  5. open http://localhost:16686 to take a look the jaeger ui pane.
+#  6. USES JAEGER API ENTRYPOINT: http://localhost:9411
+#
+# https://www.jaegertracing.io/docs/1.17/getting-started/
+# https://www.jaegertracing.io/docs/1.17/deployment/
+# https://github.com/jaegertracing/jaeger/blob/master/cmd/all-in-one/Dockerfile
+# https://github.com/jaegertracing/jaeger/blob/master/scripts/travis/build-all-in-one-image.sh
+# https://hub.docker.com/r/jaegertracing/all-in-one
+# https://github.com/jaegertracing/jaeger/blob/master/examples/hotrod/README.md
+# https://medium.com/opentracing/take-opentracing-for-a-hotrod-ride-f6e3141f7941
+#
+
+# Troubles:
+#
+# When you got some errors like:
+#
+# ERROR: for jaeger-std_elasticsearch_1  Cannot create container for service elasticsearch: failed to mount local volume: mount /data/voxr-data/jaeger/esdata:/var/lib/docker/volumes/jaeger-std_esdata/_data, flags: 0x1000: no such file or directory
+#
+# ERROR: for elasticsearch  Cannot create container for service elasticsearch: failed to mount local volume: mount /data/voxr-data/jaeger/esdata:/var/lib/docker/volumes/jaeger-std_esdata/_data, flags: 0x1000: no such file or directory
+# ERROR: Encountered errors while bringing up the project.
+#
+# Try enlarge the docker resources settings.
+# As an advice, the docker engine shoule be invoked 4GB Memory
+# and 1G/2G+ Swap space, and 4 core CPU is better.
+#
+# For more information, browse at: https://github.com/docker/compose/issues/3927#issuecomment-245948736
+#
 
 services:
 
@@ -40,7 +74,12 @@ services:
   jaeger-agent:
     image: jaegertracing/jaeger-agent
     restart: always
-    command: --collector.host-port=jaeger-collector:14267
+    # command: --collector.host-port=jaeger-collector:14267
+    # command: --reporter.grpc.host-port=jaeger-collector.jaeger-infra.svc:14250
+    command: --reporter.grpc.host-port=jaeger-collector:14250
+    environment:
+      JAEGER_AGENT_HOST: jaeger-agent
+      JAEGER_AGENT_PORT: '6831'
     ports:
       - "5775:5775/udp"
       - "6831:6831/udp"
@@ -84,12 +123,12 @@ services:
     image: jaegertracing/example-hotrod
     restart: always
     # restart: on-failure
-    ### command: all --jaeger-agent.host-port=jaeger-agent:6831
+    #command: all --jaeger-agent.host-port=jaeger-agent:6831 --verbose
     environment:
       JAEGER_AGENT_HOST: jaeger-agent
       JAEGER_AGENT_PORT: '6831'
     ports:
-      - "8080-8083:8080-8083"
+      - "9420-9423:8080-8083"
     depends_on:
       - jaeger-agent
     networks:
@@ -103,7 +142,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: "${DOCKER_DATA:-/data/voxr-data}/jaeger/esdata"
+      device: "${DOCKER_DATA:-/home/hz/data/voxr-data}/jaeger/esdata"
 
 networks:
   voxr_app_net:
